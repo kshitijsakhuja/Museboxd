@@ -1,0 +1,256 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  body {
+    background-color: #14181c;
+    color: white;
+  }
+  
+  /* Navbar Container */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #14181c;
+    padding: 10px 20px;
+    border-bottom: 1px solid #2c2f35;
+  }
+  
+  /* Logo Section */
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-circles {
+    display: flex;
+    gap: 3px;
+    margin-right: 10px;
+  }
+  
+  .circle {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+  }
+  
+  .orange {
+    background-color: #ff8800;
+  }
+  
+  .green {
+    background-color: #00b894;
+  }
+  
+  .blue {
+    background-color: #00cfcf;
+  }
+  
+  .logo-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+  }
+  
+  /* Navigation Links */
+  .nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .nav-links li a {
+    text-decoration: none;
+    color: #b0b4b9;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-links li a:hover {
+    color: #ffffff;
+  }
+  
+  /* Search Icon */
+  .search-icon {
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  
+  /* Log Button */
+.log-button {
+  background-color: #00b42c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+  
+.log-button:hover {
+  background-color: #009624;
+}
+  
+  .dropdown-arrow {
+    font-size: 0.8rem;
+  }
+
+  /* Dropdown Menu Styling */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #2c3e50; /* Dropdown Background Color */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  min-width: 160px;
+  padding: 10px 0;
+  z-index: 1000;
+}
+
+.dropdown-menu li {
+  list-style: none;
+}
+
+.dropdown-menu li a {
+  display: block;
+  color: #fff; /* Text Color */
+  padding: 8px 15px;
+  text-decoration: none;
+}
+
+.dropdown-menu li a:hover {
+  background-color: #34495e; /* Hover Background */
+  color: #f39c12; /* Hover Text Color */
+}
+
+/* Align Dropdown */
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links .dropdown a {
+  cursor: pointer;
+}
+
+/* Search Bar Styles */
+.search-container {
+  position: relative;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 5px 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.search-btn,
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #555;
+}
+
+.search-btn:hover,
+.close-btn:hover {
+  color: #333;
+}
+
+/* Search Icon */
+.search-icon {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #555;
+}
+
+.search-icon:hover {
+  color: #333;
+}
+
+/* Updated Log Dropdown Container */
+.log-button-container {
+  position: relative;
+  display: inline-block;
+  overflow: visible; /* Ensure dropdown is not clipped */
+}
+
+.log-button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.log-button:hover {
+  background-color: #357abf;
+}
+
+/* Dropdown Menu */
+.log-dropdown {
+  position: absolute;
+  top: calc(100% + 10px); /* Push it slightly below the navbar */
+  left: 0; /* Align it to the left of the log button */
+  background-color: #2c3e50; /* Dropdown background color */
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow for visibility */
+  z-index: 1000; /* Ensure it appears above other elements */
+  min-width: 220px; /* Set a minimum width */
+}
+
+/* Dropdown Arrow */
+.log-dropdown:after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 20px; /* Adjust for alignment */
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent #2c3e50 transparent;
+}
+
+/* Input Field in Dropdown */
+.log-input {
+  width: 100%; /* Use the full width of the dropdown */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
