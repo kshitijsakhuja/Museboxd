@@ -1,79 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./HomePage.css";
 
 const HomePage = () => {
-  const newReleases = [
-    { 
-      title: "Midnight Symphony", 
-      artist: "Ethereal Waves", 
-      date: "Jan 24", 
-      rating: "★★★★½", 
-      genre: "Ambient", 
-      image: "/images/midnight_symphony.jpg" 
-    },
-    { 
-      title: "Summer Vibes", 
-      artist: "Alex Trevi", 
-      date: "Jan 24", 
-      rating: "★★★½", 
-      genre: "Pop", 
-      image: "summer_vibes.jpg" 
-    },
-    { 
-      title: "Perfect Harmony", 
-      artist: "Laurinha", 
-      date: "Jan 25", 
-      rating: "★★★★★", 
-      genre: "Classical", 
-      image: "perfect_harmony.jpg" 
-    },
-    { 
-      title: "Rising Stars", 
-      artist: "William Haywood", 
-      date: "Jan 25", 
-      rating: "★★★½", 
-      genre: "Indie", 
-      image: "rising_stars.jpg" 
-    },
-    { 
-      title: "Back to Basics", 
-      artist: "Retro Beats", 
-      date: "Jan 24", 
-      rating: "★★★½", 
-      genre: "Retro", 
-      image: "back_to_basics.jpg" 
-    },
-    { 
-      title: "Robot Dreams", 
-      artist: "Digital Future", 
-      date: "Jan 24", 
-      rating: "★★★★", 
-      genre: "Electronic", 
-      image: "robot_dreams.jpg" 
-    },
-  ];
+  // State for storing fetched data
+  const [newReleases, setNewReleases] = useState([]);
+  const [popularTracks, setPopularTracks] = useState([]);
+  const [awardNominees, setAwardNominees] = useState([]);
 
-  const popularTracks = [
-    { title: "Echoes of Eternity", genre: "Instrumental", image: "echoes_of_eternity.jpg" },
-    { title: "Chasing the Horizon", genre: "Rock", image: "chasing_the_horizon.jpg" },
-    { title: "Dreamcatcher", genre: "Pop", image: "dreamcatcher.jpg" },
-    { title: "Beyond the Stars", genre: "Ambient", image: "beyond_the_stars.jpg" },
-    { title: "Soulful Rhythms", genre: "Jazz", image: "soulful_rhythms.jpg" },
-    { title: "Golden Hour", genre: "Indie", image: "golden_hour.jpg" },
-  ];
+  // Fetch MusicBrainz data
+  const fetchMusicData = async () => {
+    try {
+      // Example endpoint for fetching new releases (modify as necessary)
+      const newReleasesResponse = await axios.get(
+        "https://musicbrainz.org/ws/2/release/?query=released:2024&limit=5&fmt=json"
+      );
+      setNewReleases(newReleasesResponse.data.releases || []);
 
-  const awardNominees = [
-    { title: "Harmonic Bliss", genre: "Classical", image: "harmonic_bliss.jpg" },
-    { title: "The Golden Sound", genre: "World", image: "golden_sound.jpg" },
-    { title: "Melody Divine", genre: "Ballad", image: "melody_divine.jpg" },
-    { title: "Symphony of the Seas", genre: "Orchestral", image: "symphony_seas.jpg" },
-    { title: "Resonance", genre: "Electronic", image: "resonance.jpg" },
-    { title: "Timeless Tones", genre: "Retro", image: "timeless_tones.jpg" },
-    { title: "Luminous Echoes", genre: "Ambient", image: "luminous_echoes.jpg" },
-    { title: "Rhythm of the Night", genre: "Dance", image: "rhythm_night.jpg" },
-    { title: "Serenade", genre: "Jazz", image: "serenade.jpg" },
-    { title: "Waves of Tranquility", genre: "Meditation", image: "waves_tranquility.jpg" },
-  ];
+      // Fetch popular tracks data (adjust for actual MusicBrainz API responses)
+      const popularTracksResponse = await axios.get(
+        "https://musicbrainz.org/ws/2/recording/?query=type:track&limit=5&fmt=json"
+      );
+      setPopularTracks(popularTracksResponse.data.recordings || []);
+
+      // Fetch award nominees data (adjust as per your criteria)
+      const awardNomineesResponse = await axios.get(
+        "https://musicbrainz.org/ws/2/recording/?query=type:track&limit=10&fmt=json"
+      );
+      setAwardNominees(awardNomineesResponse.data.recordings || []);
+    } catch (error) {
+      console.error("Error fetching music data from MusicBrainz", error);
+    }
+  };
+
+  // Call fetchMusicData when the component mounts
+  useEffect(() => {
+    fetchMusicData();
+  }, []);
 
   return (
     <div className="homepage">
@@ -90,13 +53,16 @@ const HomePage = () => {
         <div className="music-list">
           {newReleases.map((track, index) => (
             <div key={index} className="music-card">
-              <img src={`/images/${track.image}`} alt={track.title} />
+              <img 
+                src={track.cover_art ? track.cover_art : "/images/default_cover.jpg"} 
+                alt={track.title || "Album cover"} 
+              />
               <p className="title">{track.title}</p>
-              <p className="genre">Genre: {track.genre}</p>
+              <p className="genre">Genre: {track.genre || "Unknown"}</p>
               <div className="details">
-                <p className="artist">By: {track.artist}</p>
-                <p className="date">Released: {track.date}</p>
-                <p className="rating">Rating: {track.rating}</p>
+                <p className="artist">By: {track.artist || "Unknown Artist"}</p>
+                <p className="date">Released: {track.date || "TBD"}</p>
+                <p className="rating">Rating: {track.rating || "N/A"}</p>
               </div>
             </div>
           ))}
@@ -109,10 +75,12 @@ const HomePage = () => {
         <div className="music-grid">
           {popularTracks.map((track, index) => (
             <div className="music-card" key={index}>
-              <img src={track.image} alt={track.title} />
+              <img 
+                src={track.cover_art || "/images/default_cover.jpg"} 
+                alt={track.title || "Track cover"} 
+              />
               <p className="title">{track.title}</p>
-              <p className="genre">Genre: {track.genre}</p>
-
+              <p className="genre">Genre: {track.genre || "Unknown"}</p>
             </div>
           ))}
         </div>
@@ -124,9 +92,12 @@ const HomePage = () => {
         <div className="music-grid">
           {awardNominees.map((track, index) => (
             <div className="music-card" key={index}>
-              <img src={track.image} alt={track.title} />
+              <img 
+                src={track.cover_art || "/images/default_cover.jpg"} 
+                alt={track.title || "Track cover"} 
+              />
               <p className="title">{track.title}</p>
-              <p className="genre">Genre: {track.genre}</p>
+              <p className="genre">Genre: {track.genre || "Unknown"}</p>
             </div>
           ))}
         </div>

@@ -1,41 +1,37 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes,Link } from "react-router-dom";
-import Navbar from "./navbar"; // Ensure Navbar is correctly imported
-import Footer from "./Footer"; // Ensure Footer is correctly imported
-import Login from "./LoginPage"; // Ensure Login is correctly imported
-import SignupModal from "./SignupPage"; // Ensure SignupModal is correctly imported
-import MusicGallery from "./MusicGallery"; // Ensure MusicGallery is correctly imported
-import Playlist from "./Playlist"; // Import the Playlist component
-import Discover from "./Discover"; // Ensure the path matches your file structure
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import Navbar from "./navbar";
+import Footer from "./Footer";
+import Login from "./LoginPage";
+import SignupModal from "./SignupPage";
+import MusicGallery from "./MusicGallery";
+import Playlist from "./Playlist";
+import Discover from "./Discover";
 import Activity from "./Activity";
-import PopularReviews from "./PopularReviews"; // Import the PopularReviews component
-import HomePage from './HomePage'; // Your home page component
+import PopularReviews from "./PopularReviews";
+import HomePage from "./HomePage";
 import SignIn from "./LoginPage";
-
+import MusicSearch from "./components/MusicSearch";
 
 const App = () => {
   return (
     <Router>
-      {/* Navbar is always displayed */}
       <Navbar />
 
       <nav>
-            <Link to="/submit">Login</Link> {/* This is where Link is used */}
+        <Link to="/submit">Login</Link>
       </nav>
 
-      {/* Define routes for different pages */}
       <Routes>
         <Route
           path="/"
           element={
             <div className="app-container">
-              {/* Hero Section */}
               <div className="hero-section">
                 <div className="hero-content">
                   <h1 className="hero-title">
-                    That's good! You've taken your first step into a larger
-                    world...
+                    That's good! You've taken your first step into a larger world...
                   </h1>
                   <p className="hero-text">
                     Museboxd lets you keep track of every Music you've seen, so
@@ -58,7 +54,6 @@ const App = () => {
                 </div>
               </div>
 
-              {/* CTA Section */}
               <div className="cta-section">
                 <h2>Tell us what you’ve seen</h2>
                 <p>
@@ -68,10 +63,8 @@ const App = () => {
                 </p>
               </div>
 
-              {/* Poster Carousel */}
               <div className="poster-carousel">
-                {[
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrwSe19c7sTq0izmSrdGpkjWbTlnLp5ldYew&s",
+                {["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrwSe19c7sTq0izmSrdGpkjWbTlnLp5ldYew&s",
                   "https://t4.ftcdn.net/jpg/04/82/50/45/360_F_482504529_3NJsfU11Rb2qAr1NVA9OEhxm4Cx1aVK0.jpg",
                   "https://www.shutterstock.com/shutterstock/photos/185875649/display_1500/stock-vector-rock-music-poster-background-template-texture-effects-can-be-turned-off-185875649.jpg",
                   "https://i.pinimg.com/236x/ca/bc/d7/cabcd715c5bcd8b5f56ed376244f1a62.jpg",
@@ -84,18 +77,19 @@ const App = () => {
                 ))}
               </div>
 
-              {/* Playlist Section */}
               <div className="playlist-section">
                 <Playlist />
               </div>
 
-              {/* Popular Reviews Section */}
               <div className="popular-reviews-section">
                 <PopularReviews />
               </div>
+
+              <div className="music-search-section">
+                <MusicSearch />
+              </div>
             </div>
           }
-          
         />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupModal />} />
@@ -105,9 +99,9 @@ const App = () => {
         <Route path="/activity" element={<Activity />} />
         <Route path="/HomePage" element={<HomePage />} />
         <Route path="/login" element={<SignIn />} />
+        <Route path="/search" element={<MusicSearch />} />
       </Routes>
 
-      {/* Footer is always displayed */}
       <Footer />
     </Router>
   );
