@@ -6,7 +6,7 @@ const Activity = () => {
     <div className="activity-container">
       <div className="header">
         <h1 className="username">MusicLover12</h1>
-        <p className="welcome-text">Welcome back! Let’s check what’s new today 🎵</p>
+        <p className="welcome-text">Welcome back! Let’s check what’s new today 🎮</p>
       </div>
 
       <div className="activity-main">
@@ -19,15 +19,15 @@ const Activity = () => {
           <div className="activity-list">
             <h3>Recent Activities</h3>
             <div className="activity-item">
-              <p><strong>JohnDoe</strong> liked your review of <em>"The Dark Side of the Moon"</em>.</p>
+              <p><strong>JohnDoe</strong> liked your review of <em>"The Last of Us Part II"</em>.</p>
               <span className="timestamp">5 minutes ago</span>
             </div>
             <div className="activity-item">
-              <p><strong>MelodyQueen99</strong> commented on your playlist <em>"Chill Vibes"</em>.</p>
+              <p><strong>GamingQueen99</strong> commented on your list <em>"Top RPGs of 2023"</em>.</p>
               <span className="timestamp">10 minutes ago</span>
             </div>
             <div className="activity-item">
-              <p><strong>BeatMaster</strong> started following you.</p>
+              <p><strong>PlayerOne</strong> started following you.</p>
               <span className="timestamp">1 hour ago</span>
             </div>
             <p className="no-more-activity">No more activity to show.</p>
@@ -37,22 +37,22 @@ const Activity = () => {
           <div className="activity-filters">
             <h3>Filter Activities</h3>
             <button className="filter-button">By Friends</button>
-            <button className="filter-button">By Albums</button>
+            <button className="filter-button">By Games</button>
             <button className="filter-button">By Time</button>
           </div>
           <div className="suggested-friends">
             <h3>Suggested Friends</h3>
             <ul>
               <li>
-                <strong>VinylCollector</strong>
+                <strong>PixelMaster</strong>
                 <button className="follow-button">Follow</button>
               </li>
               <li>
-                <strong>IndieVibes</strong>
+                <strong>ArcadeFan</strong>
                 <button className="follow-button">Follow</button>
               </li>
               <li>
-                <strong>JazzEnthusiast</strong>
+                <strong>LevelUpGuru</strong>
                 <button className="follow-button">Follow</button>
               </li>
             </ul>
@@ -63,4 +63,4 @@ const Activity = () => {
   );
 };
 
-export default Activity;
+export default Activity
