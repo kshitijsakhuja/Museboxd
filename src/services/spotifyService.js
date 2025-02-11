@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3000/spotify"; // Node.js backend
+const API_BASE_URL = "http://localhost:3001/spotify"; // Node.js backend
 
 export const searchSpotify = async (query) => {
     try {
