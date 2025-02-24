@@ -128,5 +128,4 @@ if token:
     playlist_data = get_playlist_by_id(token, playlist_id)
     playlist_items = get_playlist_items(token, playlist_id)
     cover_image_url = get_playlist_cover_image(token, playlist_id)
-
     display_playlist_info(playlist_data, playlist_items, cover_image_url)
