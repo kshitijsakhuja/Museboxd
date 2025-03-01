@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 import os
 import base64
 from requests import post, get
-import json
 
 # Load environment variables
 load_dotenv()
@@ -12,7 +11,6 @@ client_secret = os.getenv("CLIENT_SECRET")
 
 
 def get_token():
-    """Retrieve the Spotify API access token using client credentials."""
     auth_string = f"{client_id}:{client_secret}"
     auth_bytes = auth_string.encode("utf-8")
     auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")
@@ -23,67 +21,76 @@ def get_token():
         "Content-Type": "application/x-www-form-urlencoded"
     }
     data = {"grant_type": "client_credentials"}
-    
-    result = post(url, headers=headers, data=data)
-    json_result = result.json()
 
-    return json_result.get("access_token")
+    response = post(url, headers=headers, data=data)
+    response.raise_for_status()
+    return response.json().get("access_token")
 
 
 def get_auth_header(token):
-    """Return the authorization header required for Spotify API requests."""
     return {"Authorization": f"Bearer {token}"}
 
 
-def search_for_item(token, search_query, search_type="artist"):
-    """Search for an item (artist, track, album, playlist) on Spotify."""
+def search_all_types(token, search_query):
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
-    query = f"q={search_query}&type={search_type}&limit=1"
+    search_types = "artist,album,track,playlist,show"
+    query = f"q={search_query}&type={search_types}&limit=1"
 
-    query_url = f"{url}?{query}"
-    result = get(query_url, headers=headers)
-    json_result = result.json().get(search_type + "s", {}).get("items", [])
+    response = get(f"{url}?{query}", headers=headers)
+    response.raise_for_status()
 
-    if not json_result:
-        return None
+    data = response.json()
 
-    return json_result[0]
+    results = {}
+    for search_type in ["artist", "album", "track", "playlist", "show"]:
+        items = data.get(f"{search_type}s", {}).get("items", [])
+        if items:
+            results[search_type] = items[0]
+
+    return results
 
 
-def display_result(title, item):
-    """Display the search results in a structured format."""
-    if item:
-        print(f"\n{'=' * 40}\n🎵 {title} Details\n{'=' * 40}")
+def display_results(results, search_query):
+    if not results:
+        print(f"\n❌ No result found for '{search_query}'.")
+        return
+
+    print(f"\nResults for '{search_query}':\n{'='*40}")
+
+    for search_type, item in results.items():
+        print(f"\n🎵 {search_type.capitalize()} Details\n{'-'*30}")
         print(f"🔹 Name: {item.get('name', 'N/A')}")
         print(f"🔹 ID: {item.get('id', 'N/A')}")
         print(f"🔹 URL: {item.get('external_urls', {}).get('spotify', 'N/A')}")
 
-        if 'artists' in item:
-            artist_names = ", ".join([artist['name'] for artist in item['artists']])
+        if search_type == "track":
+            artist_names = ", ".join([artist['name'] for artist in item.get('artists', [])])
             print(f"🔹 Artist(s): {artist_names}")
+            print(f"🔹 Album: {item.get('album', {}).get('name', 'N/A')}")
 
-        if 'tracks' in item:
+        elif search_type == "album":
+            artist_names = ", ".join([artist['name'] for artist in item.get('artists', [])])
+            print(f"🔹 Artist(s): {artist_names}")
+            print(f"🔹 Total Tracks: {item.get('total_tracks', 'N/A')}")
+
+        elif search_type == "playlist":
+            print(f"🔹 Owner: {item.get('owner', {}).get('display_name', 'N/A')}")
             print(f"🔹 Total Tracks: {item.get('tracks', {}).get('total', 'N/A')}")
 
-        if 'album' in item:
-            print(f"🔹 Album: {item['album'].get('name', 'N/A')}")
+        elif search_type == "artist":
+            print(f"🔹 Genres: {', '.join(item.get('genres', ['N/A']))}")
+            print(f"🔹 Followers: {item.get('followers', {}).get('total', 'N/A')}")
+            print(f"🔹 Popularity: {item.get('popularity', 'N/A')}")
 
-        if 'owner' in item:
-            print(f"🔹 Owner: {item['owner'].get('display_name', 'N/A')}")
-    else:
-        print(f"\n❌ No results found for {title}.")
+        elif search_type == "show":
+            print(f"🔹 Publisher: {item.get('publisher', 'N/A')}")
+            print(f"🔹 Total Episodes: {item.get('total_episodes', 'N/A')}")
 
 
-# Get access token
+# Usage
 token = get_token()
+search_query = input("Enter the name to search: ").strip()
 
-# Search for a playlist, track, and album
-playlist = search_for_item(token, "Chill Vibes", "playlist")
-track = search_for_item(token, "Imagine", "track")
-album = search_for_item(token, "Abbey Road", "album")
-
-# Display the results
-display_result("Playlist", playlist)
-display_result("Track", track)
-display_result("Album", album)
+results = search_all_types(token, search_query)
+display_results(results, search_query)
