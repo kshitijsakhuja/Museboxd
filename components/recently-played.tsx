@@ -116,13 +116,7 @@ export function RecentlyPlayed() {
         <ScrollArea>
           <div className="flex gap-4 pb-4">
             {displayData.map((item) => (
-              <a
-                key={item.id}
-                href={`https://open.spotify.com/track/${item.id}`} // Spotify playable link
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-[150px] space-y-2 cursor-pointer"
-              >
+              <div key={item.id} className="w-[150px] space-y-2">
                 <div className="overflow-hidden rounded-md">
                   <img
                     src={item.album.images[0]?.url || "/placeholder.svg?height=150&width=150"}
@@ -136,7 +130,7 @@ export function RecentlyPlayed() {
                     {item.artists.map((artist) => artist.name).join(", ")}
                   </p>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
           <ScrollBar orientation="horizontal" />
@@ -145,3 +139,4 @@ export function RecentlyPlayed() {
     </Card>
   )
 }
+

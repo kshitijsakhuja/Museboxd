@@ -145,7 +145,7 @@ export function TopBar() {
       <div className="flex items-center">
         <Link href="/" className="flex items-center gap-2 mr-6">
           <Disc className="h-6 w-6 text-primary" />
-          <h1 className="text-xl font-bold">Museboxd</h1>
+          <h1 className="text-xl font-bold hidden sm:block">Museboxd</h1>
         </Link>
 
         <nav className="hidden md:flex items-center space-x-1">

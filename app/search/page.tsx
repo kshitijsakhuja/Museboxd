@@ -40,31 +40,17 @@ export default function SearchPage() {
     setError(null)
 
     try {
-      console.log(`Performing search for "${query}" with offset ${offset}`)
       const data = await searchSpotify(query, types, limit.toString(), offset.toString())
-      console.log("Search results:", data)
-
       setResults(data)
     } catch (err) {
-      console.error("Search error:", err)
       setError("Failed to perform search. Please try again.")
     } finally {
       setLoading(false)
     }
   }
 
-  const loadMore = () => {
-    const totalLoaded =
-      (results?.artists?.items.length || 0) +
-      (results?.albums?.items.length || 0) +
-      (results?.tracks?.items.length || 0) +
-      (results?.playlists?.items.length || 0)
-
-    performSearch(totalLoaded)
-  }
-
   const openSpotifyLink = (type: string, id: string) => {
-    const urlMap: { [key: string]: string } = {
+    const urlMap = {
       track: `https://open.spotify.com/track/${id}`,
       album: `https://open.spotify.com/album/${id}`,
       artist: `https://open.spotify.com/artist/${id}`,
@@ -106,9 +92,7 @@ export default function SearchPage() {
                     <div key={category}>
                       {results[category as keyof SearchResult]?.items?.length > 0 ? (
                         <>
-                          <h2 className="mb-4 text-xl font-semibold">
-                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                          </h2>
+                          <h2 className="mb-4 text-xl font-semibold capitalize">{category}</h2>
 
                           <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
                             {results[category as keyof SearchResult]?.items.slice(0, 5).map((item: any) => (
@@ -118,26 +102,10 @@ export default function SearchPage() {
                                 onClick={() => openSpotifyLink(category.slice(0, -1), item.id)}
                               >
                                 <CardContent className="p-4">
-                                  {category !== "tracks" ? (
-                                    <>
-                                      <div className="mb-2 aspect-square overflow-hidden rounded-md">
-                                        <img
-                                          src={item.images?.[0]?.url || "/placeholder.svg?height=150&width=150"}
-                                          alt={item.name}
-                                          className="h-full w-full object-cover transition-transform hover:scale-105"
-                                        />
-                                      </div>
-                                      <h3 className="font-medium line-clamp-1">{item.name}</h3>
-                                      <p className="text-xs text-muted-foreground line-clamp-1">
-                                        {category === "playlists"
-                                          ? `By ${item.owner.display_name}`
-                                          : item.artists?.map((a: any) => a.name).join(", ")}
-                                      </p>
-                                    </>
-                                  ) : (
+                                  {category === "tracks" ? (
                                     <div className="flex items-center gap-4">
                                       <img
-                                        src={item.album.images?.[0]?.url || "/placeholder.svg?height=48&width=48"}
+                                        src={item.album.images?.[0]?.url || "/placeholder.svg"}
                                         alt={item.name}
                                         className="h-12 w-12 object-cover rounded-md"
                                       />
@@ -148,6 +116,36 @@ export default function SearchPage() {
                                         </p>
                                       </div>
                                     </div>
+                                  ) : category === "albums" ? (
+                                    <>
+                                      <div className="mb-2 aspect-square overflow-hidden rounded-md">
+                                        <img
+                                          src={item.images?.[0]?.url || "/placeholder.svg"}
+                                          alt={item.name}
+                                          className="h-full w-full object-cover"
+                                        />
+                                      </div>
+                                      <h3 className="font-medium line-clamp-1">{item.name}</h3>
+                                      <p className="text-xs text-muted-foreground line-clamp-1">
+                                        {item.artists.map((a: any) => a.name).join(", ")} • {item.release_date}
+                                      </p>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div className="mb-2 aspect-square overflow-hidden rounded-md">
+                                        <img
+                                          src={item.images?.[0]?.url || "/placeholder.svg"}
+                                          alt={item.name}
+                                          className="h-full w-full object-cover"
+                                        />
+                                      </div>
+                                      <h3 className="font-medium line-clamp-1">{item.name}</h3>
+                                      <p className="text-xs text-muted-foreground line-clamp-1">
+                                        {category === "playlists"
+                                          ? `By ${item.owner.display_name}`
+                                          : item.artists?.map((a: any) => a.name).join(", ")}
+                                      </p>
+                                    </>
                                   )}
                                 </CardContent>
                               </Card>

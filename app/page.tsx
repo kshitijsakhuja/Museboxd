@@ -1,7 +1,10 @@
+// Update the home page to include the recommended tracks section
+
 import { Sidebar } from "@/components/sidebar"
 import { TopBar } from "@/components/top-bar"
 import { FriendActivity } from "@/components/friend-activity"
 import { RecentlyPlayed } from "@/components/recently-played"
+import { RecommendedTracks } from "@/components/recommended-tracks"
 import { Discover } from "@/components/discover"
 
 export default function Home() {
@@ -19,6 +22,7 @@ export default function Home() {
               <div className="md:col-span-2">
                 <div className="space-y-6">
                   <RecentlyPlayed />
+                  <RecommendedTracks />
                   <Discover />
                 </div>
               </div>

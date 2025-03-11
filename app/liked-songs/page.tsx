@@ -27,7 +27,7 @@ export default function LikedSongsPage() {
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const limit = 50
+  const limit = 20
 
   useEffect(() => {
     fetchLikedSongs()

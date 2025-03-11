@@ -45,8 +45,9 @@ export function Sidebar({ className }: SidebarProps) {
         <Link href="/" className="flex items-center gap-2">
           {/* <Music2 className="h-6 w-6 text-primary" /> */}
           {/* <h1 className="text-xl font-bold">Museboxd</h1> */}
+
         </Link>
-        {/* <Separator className="my-4" /> */}
+        {/*<Separator className="my-4" />*/}
         <div className="space-y-1">
           <Button variant="ghost" size="sm" className="w-full justify-start gap-2" asChild>
             <Link href="/playlists">
