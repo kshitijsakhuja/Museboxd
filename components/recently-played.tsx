@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { Button } from "@/components/ui/button"
 import { getRecentlyPlayed } from "@/lib/spotify"
 
 interface Track {
@@ -14,12 +15,16 @@ interface Track {
     images: Array<{ url: string }>
   }
   played_at?: string
+  external_urls: {
+    spotify: string
+  }
 }
 
 export function RecentlyPlayed() {
   const [recentlyPlayed, setRecentlyPlayed] = useState<Track[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
     async function fetchRecentlyPlayed() {
@@ -32,6 +37,7 @@ export function RecentlyPlayed() {
             artists: item.track.artists,
             album: item.track.album,
             played_at: item.played_at,
+            external_urls: item.track.external_urls,
           }))
           setRecentlyPlayed(tracks)
         }
@@ -56,6 +62,7 @@ export function RecentlyPlayed() {
         name: "After Hours",
         images: [{ url: "/placeholder.svg?height=150&width=150" }],
       },
+      external_urls: { spotify: "https://open.spotify.com/track/1" }
     },
     {
       id: "2",
@@ -65,46 +72,12 @@ export function RecentlyPlayed() {
         name: "Future Nostalgia",
         images: [{ url: "/placeholder.svg?height=150&width=150" }],
       },
-    },
-    {
-      id: "3",
-      name: "Chromatica",
-      artists: [{ name: "Lady Gaga" }],
-      album: {
-        name: "Chromatica",
-        images: [{ url: "/placeholder.svg?height=150&width=150" }],
-      },
-    },
-    {
-      id: "4",
-      name: "Fine Line",
-      artists: [{ name: "Harry Styles" }],
-      album: {
-        name: "Fine Line",
-        images: [{ url: "/placeholder.svg?height=150&width=150" }],
-      },
-    },
-    {
-      id: "5",
-      name: "Folklore",
-      artists: [{ name: "Taylor Swift" }],
-      album: {
-        name: "Folklore",
-        images: [{ url: "/placeholder.svg?height=150&width=150" }],
-      },
-    },
-    {
-      id: "6",
-      name: "DAMN.",
-      artists: [{ name: "Kendrick Lamar" }],
-      album: {
-        name: "DAMN.",
-        images: [{ url: "/placeholder.svg?height=150&width=150" }],
-      },
-    },
+      external_urls: { spotify: "https://open.spotify.com/track/2" }
+    }
   ]
 
   const displayData = recentlyPlayed.length > 0 ? recentlyPlayed : fallbackData
+  const visibleTracks = showAll ? displayData : displayData.slice(0, 8)
 
   return (
     <Card>
@@ -114,9 +87,13 @@ export function RecentlyPlayed() {
       </CardHeader>
       <CardContent>
         <ScrollArea>
-          <div className="flex gap-4 pb-4">
-            {displayData.map((item) => (
-              <div key={item.id} className="w-[150px] space-y-2">
+          <div className="flex gap-4 pb-4 flex-wrap">
+            {visibleTracks.map((item) => (
+              <div
+                key={item.id}
+                className="w-[150px] space-y-2 cursor-pointer"
+                onClick={() => window.open(item.external_urls.spotify, "_blank")}
+              >
                 <div className="overflow-hidden rounded-md">
                   <img
                     src={item.album.images[0]?.url || "/placeholder.svg?height=150&width=150"}
@@ -135,8 +112,16 @@ export function RecentlyPlayed() {
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
+
+        {/* Show More / Show Less Button */}
+        {displayData.length > 8 && ( 
+          <div className="text-center mt-4">
+            <Button onClick={() => setShowAll(!showAll)}>
+              {showAll ? "Show Less" : "View More"}
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   )
 }
-

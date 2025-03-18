@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { getRecommendations } from "@/lib/spotify"
+{/*import { getRecommendations } from "@/lib/spotify"*/}
 import { Loader2, PlayCircle } from "lucide-react"
 
 interface Track {

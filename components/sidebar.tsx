@@ -52,7 +52,7 @@ export function Sidebar({ className }: SidebarProps) {
           <Button variant="ghost" size="sm" className="w-full justify-start gap-2" asChild>
             <Link href="/playlists">
               <PlusCircle className="h-4 w-4" />
-              Create Playlist
+              View Playlist
             </Link>
           </Button>
           <Button variant="ghost" size="sm" className="w-full justify-start gap-2" asChild>

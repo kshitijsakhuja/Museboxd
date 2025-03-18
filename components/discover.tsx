@@ -12,19 +12,23 @@ interface Album {
   artists: Array<{ name: string }>
   images: Array<{ url: string }>
   album_type: string
+  external_urls: {
+    spotify: string
+  }
 }
 
 export function Discover() {
   const [albums, setAlbums] = useState<Album[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
     async function fetchNewReleases() {
       try {
         const data = await getNewReleases()
         if (data && data.albums && data.albums.items) {
-          setAlbums(data.albums.items)
+          setAlbums(data.albums.items.slice(0, 50)) // Fetch up to 50 items
         }
       } catch (err) {
         setError("Failed to load new releases")
@@ -45,6 +49,7 @@ export function Discover() {
       artists: [{ name: "Tame Impala" }],
       images: [{ url: "/placeholder.svg?height=150&width=150" }],
       album_type: "Psychedelic Pop",
+      external_urls: { spotify: "https://open.spotify.com/album/1" }
     },
     {
       id: "2",
@@ -52,50 +57,28 @@ export function Discover() {
       artists: [{ name: "Frank Ocean" }],
       images: [{ url: "/placeholder.svg?height=150&width=150" }],
       album_type: "R&B",
-    },
-    {
-      id: "3",
-      name: "To Pimp a Butterfly",
-      artists: [{ name: "Kendrick Lamar" }],
-      images: [{ url: "/placeholder.svg?height=150&width=150" }],
-      album_type: "Hip-Hop",
-    },
-    {
-      id: "4",
-      name: "Norman F*cking Rockwell",
-      artists: [{ name: "Lana Del Rey" }],
-      images: [{ url: "/placeholder.svg?height=150&width=150" }],
-      album_type: "Alternative",
-    },
-    {
-      id: "5",
-      name: "Random Access Memories",
-      artists: [{ name: "Daft Punk" }],
-      images: [{ url: "/placeholder.svg?height=150&width=150" }],
-      album_type: "Electronic",
-    },
-    {
-      id: "6",
-      name: "Fetch the Bolt Cutters",
-      artists: [{ name: "Fiona Apple" }],
-      images: [{ url: "/placeholder.svg?height=150&width=150" }],
-      album_type: "Alternative",
-    },
+      external_urls: { spotify: "https://open.spotify.com/album/2" }
+    }
   ]
 
   const displayData = albums.length > 0 ? albums : fallbackData
+  const visibleAlbums = showAll ? displayData : displayData.slice(0, 8)
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Discover</CardTitle>
-        <CardDescription>Based on your listening history</CardDescription>
+        <CardDescription>Based on new releases</CardDescription>
       </CardHeader>
       <CardContent>
         <ScrollArea>
-          <div className="flex gap-4 pb-4">
-            {displayData.map((item) => (
-              <div key={item.id} className="w-[150px] space-y-2">
+          <div className="flex gap-4 pb-4 flex-wrap">
+            {visibleAlbums.map((item) => (
+              <div
+                key={item.id}
+                className="w-[150px] space-y-2 cursor-pointer"
+                onClick={() => window.open(item.external_urls.spotify, "_blank")}
+              >
                 <div className="overflow-hidden rounded-md">
                   <img
                     src={item.images[0]?.url || "/placeholder.svg?height=150&width=150"}
@@ -115,11 +98,14 @@ export function Discover() {
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <Button variant="outline" className="mt-4 w-full">
-          View More Recommendations
+        <Button
+          variant="outline"
+          className="mt-4 w-full"
+          onClick={() => setShowAll(!showAll)}
+        >
+          {showAll ? "Show Less" : "View More Recommendations"}
         </Button>
       </CardContent>
     </Card>
   )
 }
-
