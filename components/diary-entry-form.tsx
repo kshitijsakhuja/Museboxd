@@ -1,8 +1,6 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -16,7 +14,9 @@ import { searchSpotify } from "@/lib/spotify"
 import { Loader2, Search, X, Disc, Album } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { toast } from "@/components/ui/use-toast"
 
+// Define the form schema
 const formSchema = z.object({
   itemId: z.string().min(1, "Please select a track or album"),
   itemType: z.enum(["track", "album"]),
@@ -26,6 +26,14 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
+interface SearchResultItem {
+  id: string
+  name: string
+  artists: { name: string }[]
+  images: { url: string }[]
+  album?: { images: { url: string }[] }
+}
+
 interface DiaryEntryFormProps {
   onSubmit: (values: FormValues & { title: string; artist: string; imageUrl: string }) => void
   onCancel?: () => void
@@ -34,28 +42,19 @@ interface DiaryEntryFormProps {
 
 export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntryFormProps) {
   const [searchQuery, setSearchQuery] = useState("")
-  const [searchResults, setSearchResults] = useState<any>(null)
+  const [searchResults, setSearchResults] = useState<{ tracks?: { items: SearchResultItem[] }; albums?: { items: SearchResultItem[] } } | null>(null)
   const [isSearching, setIsSearching] = useState(false)
   const [showResults, setShowResults] = useState(false)
   const [searchError, setSearchError] = useState<string | null>(null)
   const searchRef = useRef<HTMLDivElement>(null)
-  const [selectedItem, setSelectedItem] = useState<any>(
-    initialValues?.itemId
-      ? {
-          id: initialValues.itemId,
-          type: initialValues.itemType,
-          name: initialValues.title,
-          artists: [{ name: initialValues.artist }],
-          images: [{ url: initialValues.imageUrl }],
-          album:
-            initialValues.itemType === "track"
-              ? {
-                  images: [{ url: initialValues.imageUrl }],
-                }
-              : undefined,
-        }
-      : null,
-  )
+  const [selectedItem, setSelectedItem] = useState<SearchResultItem | null>(initialValues?.itemId ? {
+    id: initialValues.itemId,
+    type: initialValues.itemType,
+    name: initialValues.title,
+    artists: [{ name: initialValues.artist }],
+    images: [{ url: initialValues.imageUrl }],
+    album: initialValues.itemType === "track" ? { images: [{ url: initialValues.imageUrl }] } : undefined,
+  } : null)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -69,7 +68,7 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
 
   // Handle click outside to close search results
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowResults(false)
       }
@@ -109,7 +108,6 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
 
       // Check if we have any results
       const hasResults = data?.tracks?.items?.length > 0 || data?.albums?.items?.length > 0
-
       if (!hasResults) {
         setSearchError("No results found")
       }
@@ -133,7 +131,7 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
     setSearchError(null)
   }
 
-  const handleSelectItem = (item: any, type: "track" | "album") => {
+  const handleSelectItem = (item: SearchResultItem, type: "track" | "album") => {
     setSelectedItem({
       ...item,
       type,
@@ -142,6 +140,7 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
     form.setValue("itemId", item.id)
     form.setValue("itemType", type)
     setSearchResults(null)
+    setShowResults(false)
   }
 
   const handleClearSelection = () => {
@@ -149,15 +148,51 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
     form.setValue("itemId", "")
   }
 
-  const handleFormSubmit = (values: FormValues) => {
+  const [isSaving, setIsSaving] = useState(false)
+
+  const handleFormSubmit = async (values: FormValues) => {
     if (!selectedItem) return
 
-    onSubmit({
-      ...values,
-      title: selectedItem.name,
-      artist: selectedItem.artists.map((a: any) => a.name).join(", "),
-      imageUrl: selectedItem.type === "track" ? selectedItem.album.images[0]?.url : selectedItem.images[0]?.url,
-    })
+    setIsSaving(true)
+
+    try {
+      const entryData = {
+        ...values,
+        title: selectedItem.name,
+        artist: selectedItem.artists.map((a) => a.name).join(", "),
+        imageUrl: selectedItem.type === "track" ? selectedItem.album?.images[0]?.url : selectedItem.images[0]?.url,
+      }
+
+      const response = await fetch("/api/diary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(entryData),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to save diary entry")
+      }
+
+      // Call the onSubmit prop with the entry data
+      onSubmit(entryData)
+
+      toast({
+        title: "Entry saved",
+        description: "Your diary entry has been saved successfully.",
+      })
+    } catch (error) {
+      console.error("Error saving diary entry:", error)
+      toast({
+        title: "Error",
+        description: "Failed to save your diary entry. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -205,19 +240,15 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
                       <CardContent className="p-0">
                         <Tabs defaultValue="tracks">
                           <TabsList className="w-full">
-                            <TabsTrigger value="tracks" className="flex-1">
-                              Tracks
-                            </TabsTrigger>
-                            <TabsTrigger value="albums" className="flex-1">
-                              Albums
-                            </TabsTrigger>
+                            <TabsTrigger value="tracks" className="flex-1">Tracks</TabsTrigger>
+                            <TabsTrigger value="albums" className="flex-1">Albums</TabsTrigger>
                           </TabsList>
 
                           <TabsContent value="tracks" className="mt-0">
                             <ScrollArea className="h-[300px]">
                               {searchResults.tracks?.items?.length > 0 ? (
                                 <div className="space-y-0">
-                                  {searchResults.tracks.items.map((track: any) => (
+                                  {searchResults.tracks.items.map((track) => (
                                     <div
                                       key={track.id}
                                       className="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer border-b last:border-0"
@@ -233,7 +264,7 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
                                       <div className="min-w-0">
                                         <p className="font-medium truncate">{track.name}</p>
                                         <p className="text-xs text-muted-foreground truncate">
-                                          {track.artists.map((a: any) => a.name).join(", ")}
+                                          {track.artists.map((a) => a.name).join(", ")}
                                         </p>
                                       </div>
                                     </div>
@@ -249,7 +280,7 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
                             <ScrollArea className="h-[300px]">
                               {searchResults.albums?.items?.length > 0 ? (
                                 <div className="space-y-0">
-                                  {searchResults.albums.items.map((album: any) => (
+                                  {searchResults.albums.items.map((album) => (
                                     <div
                                       key={album.id}
                                       className="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer border-b last:border-0"
@@ -265,7 +296,7 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
                                       <div className="min-w-0">
                                         <p className="font-medium truncate">{album.name}</p>
                                         <p className="text-xs text-muted-foreground truncate">
-                                          {album.artists.map((a: any) => a.name).join(", ")}
+                                          {album.artists.map((a) => a.name).join(", ")}
                                         </p>
                                       </div>
                                     </div>
@@ -290,7 +321,7 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
                       <img
                         src={
                           selectedItem.type === "track"
-                            ? selectedItem.album.images[0]?.url
+                            ? selectedItem.album?.images[0]?.url
                             : selectedItem.images[0]?.url
                         }
                         alt={selectedItem.name}
@@ -308,7 +339,7 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
                       </div>
                       <p className="font-medium">{selectedItem.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {selectedItem.artists.map((a: any) => a.name).join(", ")}
+                        {selectedItem.artists.map((a) => a.name).join(", ")}
                       </p>
                     </div>
                   </div>
@@ -369,4 +400,3 @@ export function DiaryEntryForm({ onSubmit, onCancel, initialValues }: DiaryEntry
     </Card>
   )
 }
-

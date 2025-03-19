@@ -145,7 +145,7 @@ export function TopBar() {
       <div className="flex items-center">
         <Link href="/" className="flex items-center gap-2 mr-6">
           <Disc className="h-6 w-6 text-primary" />
-          <h1 className="text-xl font-bold hidden sm:block">Museboxd</h1>
+          <h1 className="text-xl font-bold hidden sm:block gradient-text">Museboxd</h1>
         </Link>
 
         <nav className="hidden md:flex items-center space-x-1">
@@ -203,7 +203,12 @@ export function TopBar() {
               )}
             </form>
           ) : (
-            <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setIsSearchExpanded(true)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full hover:bg-muted"
+              onClick={() => setIsSearchExpanded(true)}
+            >
               <Search className="h-5 w-5" />
               <span className="sr-only">Search</span>
             </Button>
@@ -379,8 +384,8 @@ export function TopBar() {
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 rounded-full">
-              <Avatar className="h-8 w-8">
+            <Button variant="ghost" className="flex items-center gap-2 rounded-full hover:bg-muted">
+              <Avatar className="h-8 w-8 border-2 border-primary">
                 <AvatarImage
                   src={session?.user?.image || "/placeholder.svg?height=32&width=32"}
                   alt={session?.user?.name || "User"}

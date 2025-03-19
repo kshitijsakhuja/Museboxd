@@ -16,9 +16,6 @@ interface Playlist {
   tracks: {
     total: number
   }
-  external_urls: {
-    spotify: string
-  }
 }
 
 interface Track {
@@ -29,9 +26,6 @@ interface Track {
     name: string
   }
   duration_ms: number
-  external_urls: {
-    spotify: string
-  }
 }
 
 export default function PlaylistPage() {
@@ -76,29 +70,15 @@ export default function PlaylistPage() {
             ) : playlist ? (
               <>
                 <div className="mb-6 flex items-center gap-6">
-                  <a
-                    href={playlist.external_urls.spotify}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="h-40 w-40 overflow-hidden rounded-md"
-                  >
+                  <div className="h-40 w-40 overflow-hidden rounded-md">
                     <img
                       src={playlist.images[0]?.url || "/placeholder.svg?height=160&width=160"}
                       alt={playlist.name}
                       className="h-full w-full object-cover"
                     />
-                  </a>
+                  </div>
                   <div>
-                    <h1 className="text-3xl font-bold">
-                      <a
-                        href={playlist.external_urls.spotify}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:underline"
-                      >
-                        {playlist.name}
-                      </a>
-                    </h1>
+                    <h1 className="text-3xl font-bold">{playlist.name}</h1>
                     <p className="mt-2 text-muted-foreground">{playlist.description}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{playlist.tracks.total} tracks</p>
                   </div>
@@ -120,16 +100,7 @@ export default function PlaylistPage() {
                       <TableBody>
                         {tracks.map((track) => (
                           <TableRow key={track.id}>
-                            <TableCell>
-                              <a
-                                href={track.external_urls.spotify}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-500 hover:underline"
-                              >
-                                {track.name}
-                              </a>
-                            </TableCell>
+                            <TableCell>{track.name}</TableCell>
                             <TableCell>{track.artists.map((a) => a.name).join(", ")}</TableCell>
                             <TableCell>{track.album.name}</TableCell>
                             <TableCell>{formatDuration(track.duration_ms)}</TableCell>
@@ -149,3 +120,4 @@ export default function PlaylistPage() {
     </div>
   )
 }
+

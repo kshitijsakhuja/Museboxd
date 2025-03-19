@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-{/*import { getRecommendations } from "@/lib/spotify"*/}
+import { getRecommendations } from "@/lib/spotify"
 import { Loader2, PlayCircle } from "lucide-react"
 
 interface Track {
@@ -106,7 +106,7 @@ export function RecommendedTracks() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recommended For You</CardTitle>
+        <CardTitle className="text-teal gradient-text">Recommended For You</CardTitle>
         <CardDescription>Based on your listening history</CardDescription>
       </CardHeader>
       <CardContent>
@@ -132,7 +132,7 @@ export function RecommendedTracks() {
                       className="aspect-square h-auto w-full object-cover transition-all hover:scale-105"
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                      <PlayCircle className="h-12 w-12 text-white" />
+                      <PlayCircle className="h-12 w-12 text-spotify" />
                     </div>
                   </div>
                   <div>
