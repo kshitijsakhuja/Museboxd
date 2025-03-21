@@ -1,8 +1,11 @@
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
-import { generateText } from "ai"
-//import { gemini } from "@ai-sdk/gemini"
 
 export async function GET() {
   const session = await getServerSession(authOptions)
@@ -28,7 +31,6 @@ export async function GET() {
     }
 
     const recentlyPlayedData = await recentlyPlayedResponse.json()
-
     const recentTracks = recentlyPlayedData.items.map((item: any) => ({
       name: item.track.name,
       artist: item.track.artists.map((a: any) => a.name).join(", "),
@@ -83,16 +85,12 @@ export async function GET() {
       Only return the JSON array, nothing else.
     `
 
-    const { text: aiRecommendations } = await generateText({
-      model: gemini("gpt-4o"),
-      prompt: prompt,
-      temperature: 0.7,
-      maxTokens: 1000,
-    })
+    // Call the Gemini model to get recommendations
+    const aiRecommendations = await model.generate({ prompt, temperature: 0.7, maxTokens: 1000 });
 
     let recommendations
     try {
-      recommendations = JSON.parse(aiRecommendations)
+      recommendations = JSON.parse(aiRecommendations.text);
     } catch (error) {
       console.error("Error parsing AI recommendations:", error)
       return NextResponse.json({ error: "Failed to parse AI recommendations" }, { status: 500 })

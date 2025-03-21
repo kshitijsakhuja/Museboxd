@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           accessTokenExpires: account.expires_at * 1000,
-          userId: user.id,
+          userId: user.id, // Store user ID in the token
         }
       }
 
@@ -64,7 +64,7 @@ export const authOptions: NextAuthOptions = {
           ...token,
           accessToken: refreshedTokens.access_token,
           accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
-          refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
+          refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
         }
       } catch (error) {
         console.error("Error refreshing access token", error)
@@ -74,7 +74,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.accessToken = token.accessToken
       session.error = token.error
-      session.userId = token.userId
+      session.userId = token.userId // Add user ID to session for easy access
 
       return session
     },
@@ -88,4 +88,3 @@ export const authOptions: NextAuthOptions = {
   },
   debug: process.env.NODE_ENV === "development",
 }
-

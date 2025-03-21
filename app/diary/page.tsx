@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, JSX } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { TopBar } from "@/components/top-bar"
@@ -12,67 +12,68 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2, Plus, CalendarDays, BookOpen, Disc, Album } from "lucide-react"
 import { format } from "date-fns"
 import { toast } from "@/components/ui/use-toast"
-import { CreativeDiaryEntry } from "@/components/creative-diary-entry"
+import { CreativeDiaryEntry, CreativeDiaryEntryProps } from "@/components/creative-diary-entry"
 import { motion } from "framer-motion"
 
 // Import the animated background
 import { AnimatedBackground } from "@/components/animated-background"
 
 // Mock data for diary entries
-// const mockDiaryEntries = [
-//   {
-//     id: "1",
-//     type: "track" as const,
-//     title: "Blinding Lights",
-//     artist: "The Weeknd",
-//     imageUrl: "/placeholder.svg?height=96&width=96",
-//     rating: 4.5,
-//     review:
-//       "This track has an amazing 80s vibe that I can't get enough of. The synths are perfect and the vocals are incredible. Definitely one of my favorite songs from The Weeknd.",
-//     date: new Date(2023, 5, 15),
-//     username: "User",
-//     userImage: "/placeholder.svg?height=32&width=32",
-//   },
-//   {
-//     id: "2",
-//     type: "album" as const,
-//     title: "Rumours",
-//     artist: "Fleetwood Mac",
-//     imageUrl: "/placeholder.svg?height=96&width=96",
-//     rating: 5,
-//     review:
-//       "A classic album that never gets old. Every song is a masterpiece and the production is timeless. The harmonies and songwriting are just perfect. I can listen to this album on repeat for days.",
-//     date: new Date(2023, 4, 28),
-//     username: "User",
-//     userImage: "/placeholder.svg?height=32&width=32",
-//   },
-//   {
-//     id: "3",
-//     type: "track" as const,
-//     title: "Bad Guy",
-//     artist: "Billie Eilish",
-//     imageUrl: "/placeholder.svg?height=96&width=96",
-//     rating: 4,
-//     review:
-//       "Such a unique sound and vibe. Billie's voice is haunting and the production is so minimal yet effective. The bass line is infectious!",
-//     date: new Date(2023, 4, 20),
-//     username: "User",
-//     userImage: "/placeholder.svg?height=32&width=32",
-//   },
-//   {
-//     id: "4",
-//     type: "album" as const,
-//     title: "To Pimp a Butterfly",
-//     artist: "Kendrick Lamar",
-//     imageUrl: "/placeholder.svg?height=96&width=96",
-//     rating: 5,
-//     review:
-//       "A masterpiece that blends jazz, funk, and hip-hop seamlessly. The lyrics are profound and the production is incredible. This album is a work of art that will be studied for generations.",
-//     date: new Date(2023, 3, 15),
-//     username: "User",
-//     userImage: "/placeholder.svg?height=32&width=32",
-//   },
-// ]
+const mockDiaryEntries = [
+  {
+    id: "1",
+    type: "track" as const,
+    title: "Blinding Lights",
+    artist: "The Weeknd",
+    imageUrl: "/placeholder.svg?height=96&width=96",
+    rating: 4.5,
+    review:
+      "This track has an amazing 80s vibe that I can't get enough of. The synths are perfect and the vocals are incredible. Definitely one of my favorite songs from The Weeknd.",
+    date: new Date(2023, 5, 15),
+    username: "User",
+    userImage: "/placeholder.svg?height=32&width=32",
+  },
+  {
+    id: "2",
+    type: "album" as const,
+    title: "Rumours",
+    artist: "Fleetwood Mac",
+    imageUrl: "/placeholder.svg?height=96&width=96",
+    rating: 5,
+    review:
+      "A classic album that never gets old. Every song is a masterpiece and the production is timeless. The harmonies and songwriting are just perfect. I can listen to this album on repeat for days.",
+    date: new Date(2023, 4, 28),
+    username: "User",
+    userImage: "/placeholder.svg?height=32&width=32",
+  },
+  {
+    id: "3",
+    type: "track" as const,
+    title: "Bad Guy",
+    artist: "Billie Eilish",
+    imageUrl: "/placeholder.svg?height=96&width=96",
+    rating: 4,
+    review:
+      "Such a unique sound and vibe. Billie's voice is haunting and the production is so minimal yet effective. The bass line is infectious!",
+    date: new Date(2023, 4, 20),
+    username: "User",
+    userImage: "/placeholder.svg?height=32&width=32",
+  },
+  {
+    id: "4",
+    type: "album" as const,
+    title: "To Pimp a Butterfly",
+    artist: "Kendrick Lamar",
+    imageUrl: "/placeholder.svg?height=96&width=96",
+    rating: 5,
+    review:
+      "A masterpiece that blends jazz, funk, and hip-hop seamlessly. The lyrics are profound and the production is incredible. This album is a work of art that will be studied for generations.",
+    date: new Date(2023, 3, 15),
+    username: "User",
+    userImage: "/placeholder.svg?height=32&width=32",
+  },
+];
+
 
 export default function DiaryPage() {
   const { data: session, status } = useSession()
@@ -274,7 +275,7 @@ export default function DiaryPage() {
                           <h2 className="text-lg font-medium">{format(new Date(dateKey), "MMMM d, yyyy")}</h2>
                         </div>
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                          {entriesByDate[dateKey].map((entry) => (
+                          {entriesByDate[dateKey].map((entry: JSX.IntrinsicAttributes & CreativeDiaryEntryProps) => (
                             <CreativeDiaryEntry
                               key={entry.id}
                               {...entry}
@@ -304,7 +305,7 @@ export default function DiaryPage() {
                 <TabsContent value="tracks" className="mt-4 space-y-8">
                   {entries.filter((e) => e.type === "track").length > 0 ? (
                     sortedDates
-                      .filter((dateKey) => entriesByDate[dateKey].some((e) => e.type === "track"))
+                      .filter((dateKey) => entriesByDate[dateKey].some((e: { type: string }) => e.type === "track"))
                       .map((dateKey) => (
                         <div key={dateKey} className="space-y-4">
                           <div className="flex items-center gap-2">
@@ -313,8 +314,8 @@ export default function DiaryPage() {
                           </div>
                           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                             {entriesByDate[dateKey]
-                              .filter((e) => e.type === "track")
-                              .map((entry) => (
+                              .filter((e: { type: string }) => e.type === "track")
+                              .map((entry: JSX.IntrinsicAttributes & CreativeDiaryEntryProps) => (
                                 <CreativeDiaryEntry
                                   key={entry.id}
                                   {...entry}
@@ -347,7 +348,7 @@ export default function DiaryPage() {
                 <TabsContent value="albums" className="mt-4 space-y-8">
                   {entries.filter((e) => e.type === "album").length > 0 ? (
                     sortedDates
-                      .filter((dateKey) => entriesByDate[dateKey].some((e) => e.type === "album"))
+                      .filter((dateKey) => entriesByDate[dateKey].some((e: { type: string }) => e.type === "album"))
                       .map((dateKey) => (
                         <div key={dateKey} className="space-y-4">
                           <div className="flex items-center gap-2">

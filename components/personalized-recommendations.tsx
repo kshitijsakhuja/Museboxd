@@ -82,13 +82,13 @@ export function PersonalizedRecommendations() {
     }
   }
 
-  // Fallback data if API call fails or during development
+  // Updated fallback data with specific album art URLs
   const fallbackData = [
     {
       id: "1",
       name: "Bohemian Rhapsody",
       artist: "Queen",
-      albumArt: "/placeholder.svg?height=150&width=150",
+      albumArt: "https://m.media-amazon.com/images/M/MV5BMTA2NDc3Njg5NDVeQTJeQWpwZ15BbWU4MDc1NDcxNTUz._V1_FMjpg_UX1000_.jpg", // Updated album art URL
       reason: "Based on your interest in classic rock and theatrical music",
       confidence: 9,
     },
@@ -96,7 +96,7 @@ export function PersonalizedRecommendations() {
       id: "2",
       name: "Redbone",
       artist: "Childish Gambino",
-      albumArt: "/placeholder.svg?height=150&width=150",
+      albumArt: "https://i1.sndcdn.com/artworks-000494218389-imek4t-t1080x1080.jpg", // Updated album art URL
       reason: "Matches your preference for soulful vocals and R&B influences",
       confidence: 8,
     },
@@ -104,7 +104,7 @@ export function PersonalizedRecommendations() {
       id: "3",
       name: "Midnight City",
       artist: "M83",
-      albumArt: "/placeholder.svg?height=150&width=150",
+      albumArt: "https://i.scdn.co/image/ab67616d0000b27307e66d3237a8d19f51a7ac08", // Updated album art URL
       reason: "Similar electronic elements to your recently played tracks",
       confidence: 7,
     },
@@ -112,7 +112,7 @@ export function PersonalizedRecommendations() {
       id: "4",
       name: "Dreams",
       artist: "Fleetwood Mac",
-      albumArt: "/placeholder.svg?height=150&width=150",
+      albumArt: "https://upload.wikimedia.org/wikipedia/en/b/b9/Fleetwood_Mac_-_Dreams.png", // Updated album art URL
       reason: "Complements your taste in melodic pop-rock",
       confidence: 9,
     },
@@ -230,4 +230,3 @@ export function PersonalizedRecommendations() {
     </Card>
   )
 }
-

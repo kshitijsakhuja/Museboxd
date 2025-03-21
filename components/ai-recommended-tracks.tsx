@@ -25,7 +25,11 @@ export function AIRecommendedTracks() {
       try {
         const data = await getAIRecommendations()
         if (data && data.recommendations) {
-          setTracks(data.recommendations)
+          // Ensure the recommendations include the correct album art URLs
+          setTracks(data.recommendations.map(track => ({
+            ...track,
+            albumArt: track.albumArt || "/placeholder.svg?height=150&width=150", // Fallback if necessary
+          })))
         }
       } catch (err) {
         setError("Failed to load AI recommendations")
@@ -38,48 +42,48 @@ export function AIRecommendedTracks() {
     fetchRecommendations()
   }, [])
 
-  // Fallback data if API call fails or during development
+  // Updated fallback data with specific album art URLs
   const fallbackData = [
     {
       id: "1",
       name: "Bohemian Rhapsody",
       artist: "Queen",
-      albumArt: "/placeholder.svg?height=150&width=150",
+      albumArt: "https://m.media-amazon.com/images/M/MV5BMTA2NDc3Njg5NDVeQTJeQWpwZ15BbWU4MDc1NDcxNTUz._V1_FMjpg_UX1000_.jpg", // Updated album art URL
       reason: "Based on your interest in classic rock and theatrical music",
     },
     {
       id: "2",
       name: "Redbone",
       artist: "Childish Gambino",
-      albumArt: "/placeholder.svg?height=150&width=150",
+      albumArt: "https://i1.sndcdn.com/artworks-000494218389-imek4t-t1080x1080.jpg", // Updated album art URL
       reason: "Matches your preference for soulful vocals and R&B influences",
     },
     {
       id: "3",
       name: "Midnight City",
       artist: "M83",
-      albumArt: "/placeholder.svg?height=150&width=150",
+      albumArt: "https://i.scdn.co/image/ab67616d0000b27307e66d3237a8d19f51a7ac08", // Updated album art URL
       reason: "Similar electronic elements to your recently played tracks",
     },
     {
       id: "4",
       name: "Dreams",
       artist: "Fleetwood Mac",
-      albumArt: "/placeholder.svg?height=150&width=150",
+      albumArt: "https://upload.wikimedia.org/wikipedia/en/b/b9/Fleetwood_Mac_-_Dreams.png", // Updated album art URL
       reason: "Complements your taste in melodic pop-rock",
     },
     {
       id: "5",
       name: "Alright",
       artist: "Kendrick Lamar",
-      albumArt: "/placeholder.svg?height=150&width=150",
+      albumArt: "https://cdn-images.dzcdn.net/images/cover/5c163a572dc76597231aa942375dec89/0x1900-000000-80-0-0.jpg", // Updated album art URL
       reason: "Matches your interest in lyrical hip-hop",
     },
     {
       id: "6",
       name: "Weird Fishes/Arpeggi",
       artist: "Radiohead",
-      albumArt: "/placeholder.svg?height=150&width=150",
+      albumArt: "https://i.scdn.co/image/ab67616d0000b27334733f87148c2fbe0176abdb", // Updated album art URL
       reason: "Aligns with your preference for atmospheric alternative music",
     },
   ]
@@ -148,4 +152,3 @@ export function AIRecommendedTracks() {
     </Card>
   )
 }
-
